@@ -7,16 +7,22 @@ function App() {
   const [pokemon2Type, setPokemon2Type] = useState('grass');
   const [endResult, setEndResult] = useState('');
 
-  const handlePokemon1Change = (event) => {
+
+    const handlePokemon1Change = (event) => {
+      try {
     setPokemon1(event.target.value);
+    } catch (error) {console.error ("Handlepokemon1change", error)};
   };
 
   const handlePokemon2Change = (event) => {
+    try {
     setPokemon2(event.target.value);
+  } catch (error) {console.error ("Handlepokemon2change", error)};
   };
 
   const getWeaknesses = (type) => {
-    switch (type) {
+    try {
+      switch (type) {
         case 'normal':
           return ['Fighting'];
         case 'fire':
@@ -56,6 +62,7 @@ function App() {
         default:
           return [];
       }
+    } catch (error) {console.error ("getweakness error", error)};
     };
 
     
@@ -93,8 +100,11 @@ function App() {
     }
 
 
-    function doAFetch() {
-      fetch('https://pokeapi.co/api/v2/pokemon/' + pokemon1)
+
+
+     function doAFetch() {
+      try {
+        fetch('https://pokeapi.co/api/v2/pokemon/' + pokemon1.toLowerCase())
         .then(response => response.json())
         .then(response => {
           console.log(response);
@@ -104,9 +114,13 @@ function App() {
           setPokemon1Type(response);
           console.log(response);
           return response;
+        })
+        .catch(error => {
+          console.error("Something went wrong with the Pokemon1 fetch", error);
+          return;
         });
     
-      fetch('https://pokeapi.co/api/v2/pokemon/' + pokemon2)
+      fetch('https://pokeapi.co/api/v2/pokemon/' + pokemon2.toLowerCase())
         .then(response => response.json())
         .then(response => {
           console.log(response);
@@ -121,9 +135,10 @@ function App() {
           findEndResult();
         })
         .catch(error => {
-          console.log('That didn\'t work. Here\'s an error:', error);
+          console.error('Something went wrong with the Pokemon2 fetch', error);
         });
-    }; 
+      } catch (error) {console.error('Fetch error:', error)};
+    };  
 
 
   return (
@@ -154,7 +169,7 @@ function App() {
       </p>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2%' }}>
-        <button onClick={doAFetch}>Submit</button>
+        <button onClick={doAFetch}>Battle!</button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2%' }}>
         {endResult}
